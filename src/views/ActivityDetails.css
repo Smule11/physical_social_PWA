@@ -1,0 +1,56 @@
+/* ActivityDetails.css */
+.centered-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%; /* Ensure the content takes full width */
+}
+
+.centered-content > * {
+  width: 90%; /* Set the width of all child elements */
+  max-width: 500px; /* Maximum width of child elements */
+  margin-bottom: 20px; /* Space between components */
+}
+
+h2 {
+  text-align: center;
+  margin: 20px 0; /* Add space above and below the heading */
+}
+
+select, input, textarea {
+  border: 1px solid #ccc; /* Give a border to input fields */
+  padding: 10px; /* Padding inside the fields */
+  border-radius: 4px; /* Rounded corners */
+  box-sizing: border-box; /* Include padding and border in the element's width */
+}
+
+button {
+  background-color: #007bff; /* Example button color */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3; /* Darker shade on hover */
+}
+
+.error-message {
+  color: red;
+  text-align: center;
+}
+
+.banner-ad {
+  text-align: center;
+  margin: 20px 0; /* Add space above and below the ad banner */
+}
+
+/* Responsive styling for smaller screens */
+@media (max-width: 768px) {
+  .centered-content > * {
+    width: 95%; /* Child elements take up more width on small screens */
+  }
+}

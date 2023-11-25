@@ -1,0 +1,8 @@
+/* src/components/BannerAd.css */
+
+.banner-ad {
+    background-color: #e0e0e0; /* Light Gray */
+    padding: 10px;
+    text-align: center;
+    font-size: 0.9rem;
+  }

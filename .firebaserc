@@ -1,0 +1,11 @@
+{
+  "projects": {
+    "default": "button-logger-pwa"
+  },
+  "targets": {},
+  "etags": {
+    "button-logger-pwa": {
+      "extensionInstances": {}
+    }
+  }
+}
