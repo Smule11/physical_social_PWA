@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
-import { collection, getDocs, addDoc, doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, getDocs, getDoc, addDoc, doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../services/firebaseConfig';
 import BannerAd from '../components/BannerAd';
 import './ActivityDetails.css';
@@ -29,7 +29,20 @@ const ActivityDetails = () => {
     };
 
     useEffect(() => {
-        fetchActivities();
+        let isMounted = true; // flag to track if the component is mounted
+    
+        const fetchData = async () => {
+            if (isMounted) {
+                await fetchActivities();
+            }
+        };
+    
+        fetchData();
+    
+        // Cleanup function
+        return () => {
+            isMounted = false; // set the flag to false when the component unmounts
+        };
     }, []);
 
     // Add a custom activity for the current user's specific sub-collection
@@ -40,15 +53,19 @@ const ActivityDetails = () => {
             const isDuplicate = activities.includes(activityNameLower); // Check if the activity name is already in the list
     
             if (isDuplicate) {
+                console.log("This activity already exists.");
                 setError('This activity already exists.');
                 return;
             }
     
             setError('');
             const activityDocRef = doc(db, `users/${user.uid}/activitiesList`, activityNameLower); // Use the name as the document ID
+            console.log("Adding custom activity:", activityNameLower);
+
             try {
                 await setDoc(activityDocRef, { color: "defaultColor" }); // Set the color as the document's field
                 fetchActivities(); // Refetch activities
+                setCategory(activityNameLower);
             } catch (error) {
                 console.error("Failed to add custom activity for user:", user.uid, error);
             }
@@ -61,20 +78,50 @@ const ActivityDetails = () => {
     const handleLogActivity = async () => {
         const user = auth.currentUser;
         if (user && category) {
-            const activityLogRef = doc(collection(db, `users/${user.uid}/activityLog`));
+            // Use the static ID for the currentActivity document
+            const currentActivityRef = doc(db, 'users', user.uid, 'currentActivity', 'current');
+            
             try {
-                await setDoc(activityLogRef, {
-                    activityName: category,
-                    details: details,
+                // Set the current activity
+                await setDoc(currentActivityRef, {
+                    name: category,
                     startTime: serverTimestamp(), // Logs the time the document was created
-                    // endTime: endTime, // Uncomment and set this when you have an end time
-                    userId: user.uid // Store user's UID if needed for reference
                 });
-                navigate('/'); // Navigate back to home page
+
+                // Read back the document to get the actual timestamp
+                const docSnap = await getDoc(currentActivityRef);
+                if (docSnap.exists() && docSnap.data().startTime) {
+                    const serverDate = docSnap.data().startTime.toDate(); // Convert the Firestore timestamp to a JavaScript Date object
+                    // const formattedDate = serverDate.toISOString().replace('T', ' ').split('.')[0]; // Format the date as YYYY-MM-DD HH:MM:SS
+                    const formattedDate = serverDate.toISOString().split('T')[0]; // Format the date as YYYY-MM-DD
+                    const formattedTime = serverDate.toISOString().split('T')[1].split('.')[0]; // Format the time as HH:MM:SS
+                    const activityLogName = formattedTime + "_" + category;
+                    const formattedDateString = serverDate.toString(); // Show the full object
+                    console.log("startTime serverDate:", formattedDateString);
+
+                    // Create a new activity log entry using the formattedDate
+                    // const activityLogRef = doc(db, `users/${user.uid}/activityLog`, formattedDate);
+                    // actually, store the activity log doc inside a subcollection named after the formatted date
+                    const activityLogRef = doc(collection(db, `users/${user.uid}/`, formattedDate), activityLogName);
+                    // Add the new activity log entry
+                    await setDoc(activityLogRef, {
+                        activityName: category,
+                        details: details,
+                        startTime: serverTimestamp(), // Logs the time the document was created
+                        // endTime: endTime, // Uncomment and set this when you have an end time
+                        userId: user.uid // Store user's UID if needed for reference
+                    });
+
+                    navigate('/'); // Navigate back to home page
+
+                } else {
+                    console.error("Failed to get the server timestamp.");
+                }
             } catch (error) {
-                console.error("Failed to log activity for user:", user.uid, error);
+                console.error("Failed to log activity or set current activity for user:", user.uid, error);
             }
         } else {
+            // Handle the error case where category is not selected or user is not signed in
             setError('Please select an activity or sign in');
         }
     };
@@ -106,7 +153,7 @@ const ActivityDetails = () => {
             />
             {category && <span className="selected-activity-message">Selected activity: {category}</span>}
             <button onClick={handleLogActivity} className="button">
-                Log Activity
+                Start Activity
             </button>
             {error && <p className="error-message">{error}</p>}
         </div>

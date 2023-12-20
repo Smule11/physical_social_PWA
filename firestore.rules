@@ -2,42 +2,47 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Match any document in the 'activitiesList' sub-collection of a user
-    match /users/{userId}/activitiesList/{document=**} {
-      allow read, write: if request.auth.uid == userId;
-    }
-
-    // Match any document in the 'activityLog' sub-collection of a user
-    match /users/{userId}/activityLog/{document=**} {
-      allow read, write: if request.auth.uid == userId;
-    }
-
-    // Match the 'currentActivity' document of a user
-    // If 'currentActivity' is a single document and not a collection, remove the wildcard
-    match /users/{userId}/currentActivity {
-      allow read, write: if request.auth.uid == userId;
-    }
-
     // Match any user document and its subcollections
-    match /users/{userId} {
+    match /users/{userId}/{collection=**} {
       allow read, write: if request.auth.uid == userId;
-
-      // Match any document in the 'activitiesList' sub-collection of a user
-      match /users/{userId}/activitiesList/{document=**} {
-        allow read, write: if request.auth.uid == userId;
-      }
-
-      // Match any document in the 'activityLog' sub-collection of a user
-      match /users/{userId}/activityLog/{document=**} {
-        allow read, write: if request.auth.uid == userId;
-      }
-
-      // Match the 'currentActivity' document of a user
-      // If 'currentActivity' is a single document and not a collection, remove the wildcard
-      match /users/{userId}/currentActivity {
-        allow read, write: if request.auth.uid == userId;
-      }
     }
+
+//    // Match any document in the 'activitiesList' sub-collection of a user
+//    match /users/{userId}/activitiesList/{document=**} {
+//      allow read, write: if request.auth.uid == userId;
+//    }
+
+//    // Match any document in the 'activityLog' sub-collection of a user
+//    match /users/{userId}/activityLog/{document=**} {
+//      allow read, write: if request.auth.uid == userId;
+//    }
+
+//    // Match the 'currentActivity' document of a user
+//    // If 'currentActivity' is a single document and not a collection, remove the wildcard
+//    match /users/{userId}/currentActivity/{document=**} {
+//      allow read, write: if request.auth.uid == userId;
+//    }
+
+//     // Match any user document and its subcollections
+//     match /users/{userId} {
+//       allow read, write: if request.auth.uid == userId;
+
+//       // Match any document in the 'activitiesList' sub-collection of a user
+//       match /users/{userId}/activitiesList/{document=**} {
+//         allow read, write: if request.auth.uid == userId;
+//       }
+
+//       // Match any document in the 'activityLog' sub-collection of a user
+//       match /users/{userId}/activityLog/{document=**} {
+//         allow read, write: if request.auth.uid == userId;
+//       }
+
+//       // Match the 'currentActivity' document of a user
+//       // If 'currentActivity' is a single document and not a collection, remove the wildcard
+//       match /users/{userId}/currentActivity {
+//         allow read, write: if request.auth.uid == userId;
+//       }
+//     }
   
   }
 }

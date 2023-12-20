@@ -38,10 +38,12 @@ export const resetPassword = async (email) => {
         const currentUser = auth.currentUser;
         if (currentUser && !currentUser.emailVerified) {
             const responseMessage = await handleSendEmail(null, 'verification');
+            await firebaseSignOut(auth); // Make it so that the user has to sign in again
             return responseMessage;
         }
         else {
             const responseMessage = await handleSendEmail(email, 'passwordReset');
+            await firebaseSignOut(auth); // Make it so that the user has to sign in again
             return responseMessage;
         }
     } catch (error) {
@@ -58,10 +60,12 @@ export const signIn = async (email, password) => {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
         if (!user) {
+            await firebaseSignOut(auth); // not sure if this sign out is necessary, cause error?
             return '2 Please sign up first.';
         }
         if (user && !user.emailVerified) {
             const responseMessage = await handleSendEmail(null, 'verification');
+            await firebaseSignOut(auth); // Make it so that the user has to sign in again
             return responseMessage;
         }
         if (user.emailVerified) {
@@ -81,15 +85,18 @@ export const signUp = async (email, password) => {
         const currentUser = auth.currentUser;
         console.log('User (sign up):\n', currentUser);
         if (currentUser && currentUser.emailVerified) {
+            await firebaseSignOut(auth); // Make it so that the user has to sign in again
             return 'Already signed up successfully!';
         }
         if (!currentUser) {
             await createUserWithEmailAndPassword(auth, email, password);
             const responseMessage = await handleSendEmail(null, 'verification');
+            await firebaseSignOut(auth); // Make it so that the user has to sign in again
             return responseMessage;
         }
         if (currentUser && !currentUser.emailVerified) {
             const responseMessage = await handleSendEmail(null, 'verification');
+            await firebaseSignOut(auth); // Make it so that the user has to sign in again
             return responseMessage;
         }
     } catch (error) {

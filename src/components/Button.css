@@ -1,27 +1,42 @@
 /* src/components/Button.css */
+/* body, html {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0; 
+} */
 
-.bigButton {
-    width: 100px;
-    height: 100px;
-    border: none;
-    border-radius: 50%;  /* Makes the button circular */
-    background-color: #ff0000;  /* Red */
-    color: white;
-    cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    position: relative; /* Relative positioning to center the text */
-    left: 50%; /* Centering */
-    transform: translateX(-50%); /* Centering */
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* Adds a shadow effect for a 3D look */
-    font-size: 1rem; /* Adjust font size if necessary */
-    display: flex; /* Flexbox to center the text */
-    align-items: center; /* Vertical centering */
-    justify-content: center; /* Horizontal centering */
+.bigButton-container {
+    text-align: center;
+    /* margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center; */
 }
 
-.bigButton:hover {
-    box-shadow: 0 8px 20px rgba(0,0,0,0.3); /* Darker shadow on hover for more depth */
-    transform: translateX(-50%) translateY(-2px); /* Slight upward shift on hover */
+.bigButton {
+    width: 200px;
+    height: 200px;
+    border: none;
+    border-radius: 50%;  /* Makes the button circular */
+    background-color: #ff0000; /* Red background */
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 2rem;
+    margin: 0px 0px 20px 0px;
+    transition: 0.3s;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+}
+
+.bigButton:active {
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2); /* Smaller shadow for press effect */
+    transform: scale(0.98); /* Slightly reduces the size to simulate pressing */
 }
 
 button {

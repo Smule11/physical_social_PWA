@@ -120,7 +120,7 @@ const Authentication = () => {
     }
 
     return (
-        <div className="container">
+        <div className="auth-container">
             <h2>{isSignUp ? 'Sign Up' : 'Sign In'}</h2>
             <form>
                 {feedbackMessage && <p className="message-box">{feedbackMessage}</p>}
